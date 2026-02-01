@@ -1,0 +1,42 @@
+(not mine)
+
+(() => {
+  let totalMinutes = 0;
+  const entries = [];
+
+  document.querySelectorAll("div.flex.flex-row.gap-4").forEach(row => {
+    const ps = row.querySelectorAll("p.text-sm");
+    const timeEl = row.querySelector("p.grow");
+
+    if (!ps.length || !timeEl) return;
+
+    const statusEl = ps[ps.length - 1]; // ← last p.text-sm
+
+    if (statusEl.innerText.trim().toLowerCase() !== "finalized") return;
+
+    const match = timeEl.innerText.match(/(\d+)\s*h\s*(\d+)\s*min/);
+    if (!match) return;
+
+    const hours = parseInt(match[1], 10);
+    const mins = parseInt(match[2], 10);
+    const minutes = hours * 60 + mins;
+
+    entries.push({
+      time: match[0],
+      hours,
+      mins,
+      clay: (minutes / 60).toFixed(2)
+    });
+
+    totalMinutes += minutes;
+  });
+
+  console.table(entries);
+
+  const totalClay = (totalMinutes / 60).toFixed(2);
+  const hh = Math.floor(totalMinutes / 60);
+  const mm = totalMinutes % 60;
+
+  console.log(`Total Finalized time: ${hh}h ${mm}min`);
+  console.log(`:bricks: Total clay: ${totalClay}`);
+})();
