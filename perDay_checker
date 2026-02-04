@@ -1,0 +1,55 @@
+(() => {
+  const text = document.body.innerText;
+
+  let totalMinutes = 0;
+  const entries = [];
+  const regex = /(\d+)\s*h\s*(\d+)\s*min/g;
+
+    
+    
+  let goal = 80;
+
+
+    
+  const today = new Date()
+  const march9 = new Date(today.getFullYear(), 2, 9) // months start at 0
+
+  const deadline = Math.ceil((march9 - today) / (1000 * 60 * 60 * 24))
+  function hoursToHM(hours) {
+    const h = Math.floor(hours)
+    const m = Math.round((hours - h) * 60)
+    return `${h}h ${m}min`
+  }
+
+    
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    const hours = parseInt(match[1], 10);
+    const mins = parseInt(match[2], 10);
+    const minutes = hours * 60 + mins;
+
+    entries.push({
+      raw: match[0],
+      hours,
+      mins,
+      minutes
+    });
+
+    totalMinutes += minutes;
+  }
+
+  console.table(entries);
+
+  const hh = Math.floor(totalMinutes / 60);
+  const mm = totalMinutes % 60;
+
+  console.log("Total minutes:", totalMinutes);
+  console.log("Total hours (decimal):", (totalMinutes / 60).toFixed(2));
+  console.log(`Total time: ${hh}h ${mm}min`);
+  console.log("Current Goal is: ", goal, " hours or ", (goal*60), " Minutes");
+  console.log("To reach goal you need: ");
+  console.log("",(goal-(totalMinutes/60).toFixed(2)), " More Hours");
+  console.log("Or ",((goal*60)-totalMinutes), " More Minutes");
+  console.log("End date is: ", deadline, " days away.")
+  console.log("to reach your goal do atleast: ", hoursToHM((goal-(totalMinutes/60))/deadline)) 
+})();
